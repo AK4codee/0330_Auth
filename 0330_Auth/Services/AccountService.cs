@@ -1,4 +1,5 @@
-﻿using _0330_Auth.Models.DBEntity;
+﻿using _0330_Auth.Common;
+using _0330_Auth.Models.DBEntity;
 using _0330_Auth.Models.DTO.Account;
 using _0330_Auth.Repositories.Interface;
 using _0330_Auth.Services.Interface;
@@ -38,13 +39,15 @@ namespace _0330_Auth.Services
                 Email = input.Email,
                 Phone = input.Phone,
                 Name = input.Name,
-                Password = input.Password,
+                Password = Encryption.SHA256Encryption(input.Password),
                 IsAdmin = false,
                 IsVerify = false,
             };
 
             var target = _repository.DBContext.Users.Add(entity);
             _repository.Save();
+
+            //驗證
 
             res.IsSuccess = true;
             res.User.UserId = target.Entity.Id;
@@ -76,7 +79,7 @@ namespace _0330_Auth.Services
                 return res;
             }
 
-            if(input.Password != currentUser.Password)
+            if(Encryption.SHA256Encryption(input.Password) != currentUser.Password)
             {
                 res.Message = "密碼錯誤";
                 return res;
