@@ -1,4 +1,8 @@
 using _0330_Auth.Models.DBEntity;
+using _0330_Auth.Repositories;
+using _0330_Auth.Repositories.Interface;
+using _0330_Auth.Services;
+using _0330_Auth.Services.Interface;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -30,6 +34,9 @@ namespace _0330_Auth
             {
                 options.UseSqlServer(Configuration.GetConnectionString("AuthDB"));
             });
+
+            services.AddTransient<IDBRepository, DBRepository>();
+            services.AddTransient<IAccountService, AccountService>();
 
             services.AddControllersWithViews();
         }

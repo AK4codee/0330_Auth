@@ -2,6 +2,10 @@
 {
     public class LoginAccountOutputDto
     {
+        public LoginAccountOutputDto()
+        {
+            User = new UserData();
+        }
         public bool IsSuccess { get; set; }
         public string Message { get; set; }
         public UserData User { get; set; }
