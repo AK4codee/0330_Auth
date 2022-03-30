@@ -1,4 +1,5 @@
 ﻿using _0330_Auth.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -32,6 +33,24 @@ namespace _0330_Auth.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [AllowAnonymous]
+        public IActionResult NoAuthPage()
+        {
+            return View();
+        }
+
+        [Authorize]
+        public IActionResult AuthPage()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        public IActionResult RolePage()
+        {
+            return View();
         }
     }
 }

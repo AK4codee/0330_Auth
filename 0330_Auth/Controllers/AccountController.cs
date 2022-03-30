@@ -45,18 +45,6 @@ namespace _0330_Auth.Controllers
 
             if (outputDto.IsSuccess)
             {
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, outputDto.User.UserId.ToString()),
-                    new Claim(ClaimTypes.Email, outputDto.User.UserEmail),
-                    new Claim(ClaimTypes.Role, outputDto.User.UserRole),
-                    new Claim("UserName", outputDto.User.UserName)
-                };
-
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                HttpContext.SignInAsync(new ClaimsPrincipal(claimsIdentity));
-
                 return Redirect("/");
             }
             else
@@ -64,6 +52,12 @@ namespace _0330_Auth.Controllers
                 return View("Login");
             }
 
+        }
+
+        public IActionResult Logout()
+        {
+            _serevice.LogoutAccount();
+            return Redirect("/");
         }
 
         [HttpPost]

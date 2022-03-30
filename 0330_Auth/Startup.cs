@@ -39,6 +39,8 @@ namespace _0330_Auth
             // 設定驗證方式
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 
+            services.AddHttpContextAccessor();
+
             services.AddTransient<IDBRepository, DBRepository>();
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IMailService, MailService>();

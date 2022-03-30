@@ -3,7 +3,12 @@ using _0330_Auth.Models.DBEntity;
 using _0330_Auth.Models.DTO.Account;
 using _0330_Auth.Repositories.Interface;
 using _0330_Auth.Services.Interface;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 
 namespace _0330_Auth.Services
 {
@@ -11,10 +16,12 @@ namespace _0330_Auth.Services
     {
         private readonly IDBRepository _repository;
         private readonly IMailService _mailService;
-        public AccountService(IDBRepository repository, IMailService mailService)
+        private readonly IHttpContextAccessor _contextAccessor;
+        public AccountService(IDBRepository repository, IMailService mailService, IHttpContextAccessor httpContextAccessor)
         {
             _repository = repository;
             _mailService = mailService;
+            _contextAccessor = httpContextAccessor;
         }
         public CreateAccountOutputDto CreateAccount(CreateAccountInputDto input)
         {
@@ -76,7 +83,7 @@ namespace _0330_Auth.Services
 
             var currentUser = _repository.GetAll<User>().First(x => x.Email == input.Account);
             
-            if (currentUser.IsVerify)
+            if (!currentUser.IsVerify)
             {
                 res.Message = "請先驗證帳號";
                 return res;
@@ -95,12 +102,27 @@ namespace _0330_Auth.Services
             res.User.UserPhone = currentUser.Phone;
             res.User.UserRole = currentUser.IsAdmin ? "Admin" : "User";
 
+            if (res.IsSuccess)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, res.User.UserId.ToString()),
+                    new Claim(ClaimTypes.Email, res.User.UserEmail),
+                    new Claim(ClaimTypes.Role, res.User.UserRole),
+                    new Claim("UserName", res.User.UserName)
+                };
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                _contextAccessor.HttpContext.SignInAsync(new ClaimsPrincipal(claimsIdentity));
+            }
+
             return res;
         }
 
         public void LogoutAccount()
         {
-            
+            _contextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
 
         public void VerifyAccount(int userId)
