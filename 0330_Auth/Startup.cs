@@ -1,6 +1,8 @@
+using _0330_Auth.Models.DBEntity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,6 +25,12 @@ namespace _0330_Auth
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddDbContext<AuthDBContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("AuthDB"));
+            });
+
             services.AddControllersWithViews();
         }
 
