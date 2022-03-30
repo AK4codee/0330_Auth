@@ -10,9 +10,11 @@ namespace _0330_Auth.Services
     public class AccountService : IAccountService
     {
         private readonly IDBRepository _repository;
-        public AccountService(IDBRepository repository)
+        private readonly IMailService _mailService;
+        public AccountService(IDBRepository repository, IMailService mailService)
         {
             _repository = repository;
+            _mailService = mailService;
         }
         public CreateAccountOutputDto CreateAccount(CreateAccountInputDto input)
         {
@@ -48,6 +50,7 @@ namespace _0330_Auth.Services
             _repository.Save();
 
             //驗證
+            _mailService.SendVerifyMail(target.Entity.Email, target.Entity.Id);
 
             res.IsSuccess = true;
             res.User.UserId = target.Entity.Id;

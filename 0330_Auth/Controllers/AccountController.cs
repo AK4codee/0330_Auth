@@ -17,6 +17,12 @@ namespace _0330_Auth.Controllers
             return View();
         }
 
+        public IActionResult Verify(int user)
+        {
+            _serevice.VerifyAccount(user);
+            return View();
+        }
+
         [HttpPost]
         public IActionResult Signup(SignupDataModel request)
         {
@@ -33,7 +39,7 @@ namespace _0330_Auth.Controllers
 
             if (outputDto.IsSuccess)
             {
-                return Redirect("/");
+                return View("CheckEmail");
             }
             else
             {

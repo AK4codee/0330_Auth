@@ -37,6 +37,7 @@ namespace _0330_Auth
 
             services.AddTransient<IDBRepository, DBRepository>();
             services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<IMailService, MailService>();
 
             services.AddControllersWithViews();
         }
