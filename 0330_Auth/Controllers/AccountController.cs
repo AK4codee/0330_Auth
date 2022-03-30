@@ -1,7 +1,11 @@
 ﻿using _0330_Auth.Models.DTO.Account;
 using _0330_Auth.Models.ViewModel.Account.Data;
 using _0330_Auth.Services.Interface;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace _0330_Auth.Controllers
 {
@@ -21,6 +25,45 @@ namespace _0330_Auth.Controllers
         {
             _serevice.VerifyAccount(user);
             return View();
+        }
+
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Login(LoginDataModel request)
+        {
+            var inputDto = new LoginAccountInputDto
+            {
+                Account = request.Account,
+                Password = request.Password,
+            };
+
+            var outputDto = _serevice.LoginAccount(inputDto);
+
+            if (outputDto.IsSuccess)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, outputDto.User.UserId.ToString()),
+                    new Claim(ClaimTypes.Email, outputDto.User.UserEmail),
+                    new Claim(ClaimTypes.Role, outputDto.User.UserRole),
+                    new Claim("UserName", outputDto.User.UserName)
+                };
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                HttpContext.SignInAsync(new ClaimsPrincipal(claimsIdentity));
+
+                return Redirect("/");
+            }
+            else
+            {
+                return View("Login");
+            }
+
         }
 
         [HttpPost]

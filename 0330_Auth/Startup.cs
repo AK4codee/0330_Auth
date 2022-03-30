@@ -3,6 +3,7 @@ using _0330_Auth.Repositories;
 using _0330_Auth.Repositories.Interface;
 using _0330_Auth.Services;
 using _0330_Auth.Services.Interface;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -35,6 +36,9 @@ namespace _0330_Auth
                 options.UseSqlServer(Configuration.GetConnectionString("AuthDB"));
             });
 
+            // 設定驗證方式
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+
             services.AddTransient<IDBRepository, DBRepository>();
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IMailService, MailService>();
@@ -60,6 +64,7 @@ namespace _0330_Auth
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

@@ -68,7 +68,7 @@ namespace _0330_Auth.Services
             var res = new LoginAccountOutputDto();
             res.IsSuccess = false;
 
-            if (this.IsExistAccount(input.Account))
+            if (!this.IsExistAccount(input.Account))
             {
                 res.Message = "使用者不存在，請先註冊";
                 return res;
