@@ -1,0 +1,16 @@
+﻿@{
+    var isLogin = User.Identity.IsAuthenticated; /*有沒有登入*/
+}
+
+@if(isLogin){
+    <li class="nav-item">
+        <a class="nav-link text-dark" href="/Account/Logout">Logout</a>
+    </li>
+}else{
+    <li class="nav-item">
+        <a class="nav-link text-dark" href="/Account/Signup">Signup</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" href="/Account/Login">Login</a>
+    </li>
+}

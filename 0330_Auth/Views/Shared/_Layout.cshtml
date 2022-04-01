@@ -25,15 +25,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         <div id="user-info" class="d-flex">
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" href="/Account/Signup">Signup</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" href="/Account/Login">Login</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" href="/Account/Logout">Loginout</a>
-                            </li>
+                            @Html.Partial("_UserInfoPartial")
                         </div>
                     </ul>
                 </div>
