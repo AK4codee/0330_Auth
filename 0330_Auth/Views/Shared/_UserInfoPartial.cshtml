@@ -3,7 +3,8 @@
 }
 
 @if(isLogin){
-    <li class="nav-item">
+    <li class="nav-item d-flex align-items-center">
+        <span>Hello! @User.Claims.First(x => x.Type == "UserName").Value</span>
         <a class="nav-link text-dark" href="/Account/Logout">Logout</a>
     </li>
 }else{
