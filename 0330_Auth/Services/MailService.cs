@@ -1,4 +1,5 @@
 ﻿using _0330_Auth.Services.Interface;
+using Microsoft.AspNetCore.Http;
 using System.Net;
 using System.Net.Mail;
 
@@ -6,6 +7,11 @@ namespace _0330_Auth.Services
 {
     public class MailService : IMailService
     {
+        private readonly IHttpContextAccessor _http;
+        public MailService(IHttpContextAccessor http)
+        {
+            _http = http;
+        }
         public void SendVerifyMail(string mailTo, int userId)
         {
             // SMTP
@@ -22,7 +28,7 @@ namespace _0330_Auth.Services
             mail.IsBodyHtml = true;
             mail.Body = @$"
                 <h1>點及以下連結以啟用(驗證)帳戶</h1>
-                <a href='https://localhost:44323/Account/Verify?user={userId}' target='_blank'>連結</a>
+                <a href='https://{_http.HttpContext.Request.Host.Value}/Account/Verify?user={userId}' target='_blank'>連結</a>
             ";
 
             client.Send(mail);
