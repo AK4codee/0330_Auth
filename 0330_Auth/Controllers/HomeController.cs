@@ -1,4 +1,6 @@
 ﻿using _0330_Auth.Models;
+using _0330_Auth.Models.DBEntity;
+using _0330_Auth.Repositories.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,10 +15,13 @@ namespace _0330_Auth.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IDBRepository _repository;
 
-        public HomeController(ILogger<HomeController> logger)
+
+        public HomeController(ILogger<HomeController> logger, IDBRepository repository)
         {
             _logger = logger;
+            _repository = repository;
         }
 
         public IActionResult Index()
@@ -44,7 +49,9 @@ namespace _0330_Auth.Controllers
         [Authorize]
         public IActionResult AuthPage()
         {
-            return View();
+            var userId = int.Parse(User.Identity.Name);
+            var addressData = _repository.GetAll<AddressBook>().Where(x => x.UserId == userId).ToList();
+            return View(addressData);
         }
 
         [Authorize(Roles = "Admin")]

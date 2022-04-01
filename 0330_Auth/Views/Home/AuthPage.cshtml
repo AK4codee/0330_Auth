@@ -1,1 +1,10 @@
-﻿<h1>AuthPage</h1>
+﻿@using _0330_Auth.Models.DBEntity
+@model List<AddressBook>
+
+<h1>AuthPage</h1>
+<ul>
+    @foreach(var person in Model)
+    {
+        <li>@person.Name | @person.Email | @person.Phone</li>
+    }
+</ul>
