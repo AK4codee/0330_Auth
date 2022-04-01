@@ -54,6 +54,26 @@ namespace _0330_Auth.Controllers
 
         }
 
+        // 前端互動用的
+        [HttpPost]
+        public IActionResult FetchLogin([FromBody] LoginDataModel request)
+        {
+            var inputDto = new LoginAccountInputDto
+            {
+                Account = request.Account,
+                Password = request.Password,
+            };
+
+            var outputDto = _serevice.LoginAccount(inputDto);
+
+            return new JsonResult(outputDto);
+        }
+
+        public IActionResult UserInfo()
+        {
+            return PartialView("_UserInfoPartial");
+        }
+
         public IActionResult Logout()
         {
             _serevice.LogoutAccount();

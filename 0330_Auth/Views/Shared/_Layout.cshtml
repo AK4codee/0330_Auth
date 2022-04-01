@@ -55,19 +55,19 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form method="post" action="/Account/Login">
+                @*<form method="post" action="/Account/Login">*@
 
                     <label>*Email</label>
-                    <input type="email" name="Account"/>
+                    <input id="account" type="email" name="Account"/>
                     <br />
 
                     <label>*Password</label>
-                    <input type="text" name="Password"/>
+                    <input id="password" type="text" name="Password"/>
                     <br />
 
-                    <button type="submit">sign up</button>
+                    <button id="submit" type="submit">sign up</button>
                     <span>**</span>
-                </form>
+                @*</form>*@
             </div>
         </div>
     </div>
@@ -77,5 +77,44 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        const account = document.getElementById("account");
+        const password = document.getElementById("password");
+        const submit = document.getElementById("submit");
+        const userInfo = document.querySelector('#user-info')
+
+        submit.onclick = function(){
+            let data = {
+                Account: account.value,
+                Password: password.value
+            }
+
+            console.log("login");
+            fetch("/Account/FetchLogin", {
+                headers: {
+                    'Accept': 'application/json, text/plain',
+                    'Content-Type': 'application/json;charset=UTF-8'
+                },
+                method: 'POST',
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(jsonData => {
+                console.log(jsonData);
+                if(jsonData.isSuccess){
+                    $('#exampleModal').modal('hide');
+                    fetch('/Account/UserInfo')
+                    .then(res => res.text())
+                    .then(textData => {
+                        console.log(textData)
+                        userInfo.innerHTML = textData
+                    })
+                }else{
+                    
+                }
+            })
+        }
+    </script>
 </body>
 </html>
